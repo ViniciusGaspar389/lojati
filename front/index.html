@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>LojaTI - Clientes</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input,
+        button {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Cadastro de Clientes</h1>
+
+    <form id="formCliente">
+
+        <input
+            type="text"
+            id="nome"
+            placeholder="Nome"
+            required
+        >
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Email"
+            required
+        >
+
+        <input
+            type="text"
+            id="telefone"
+            placeholder="Telefone"
+        >
+
+        <input
+            type="text"
+            id="endereco"
+            placeholder="Endereço"
+        >
+
+        <button type="submit">
+            Cadastrar Cliente
+        </button>
+
+    </form>
+
+    <div id="resultado"></div>
+
+
+    <script>
+
+        const form = document.getElementById("formCliente");
+
+        form.addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+
+            const dados = {
+
+                Nome: document.getElementById("nome").value,
+
+                Email: document.getElementById("email").value,
+
+                Telefone: document.getElementById("telefone").value,
+
+                Endereco: document.getElementById("endereco").value
+
+            };
+
+
+            try {
+
+                const resposta = await fetch(
+                    "../back/index.php?rota=clientes/create",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(dados)
+                    }
+                );
+
+
+                const resultado = await resposta.json();
+
+
+                document.getElementById("resultado").innerText =
+                    resultado.mensagem || resultado.erro;
+
+
+                if (resultado.sucesso) {
+
+                    form.reset();
+
+                }
+
+            } catch (erro) {
+
+                document.getElementById("resultado").innerText =
+                    "Erro ao conectar com a API.";
+
+                console.error(erro);
+
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
